@@ -3,6 +3,8 @@ import logging
 import argparse
 
 from converter import convert
+from parsing import parsing
+
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s : %(message)s",
@@ -35,13 +37,13 @@ def main():
     for file in files:
         file_name = file.split("/")[-1].split(".")[0]
         ext = file.split(".")[-1]
-        if ext not in ["mid", "mscx", "musicxml", "mxl"]:
+        if ext not in ["mid", "mscx", "mscz", "musicxml", "mxl"]:
             logging.error(f"{file_name} : extension .{ext} not supprted")
             continue
         if convert(old=file, new=f"{cache_dir}/{file_name}.mscx", ms_img=args.ms_img_path, logger=logging):
-            #parsing
+            parsing(f"{cache_dir}/{file_name}.mscx", file_name)
             convert(old=f"{cache_dir}/{file_name}.mscx", new=f"{out_dir}/{file_name}.pdf", ms_img=args.ms_img_path, logger=logging)
-            os.remove(f"{cache_dir}/{file_name}.mscx")
+            # os.remove(f"{cache_dir}/{file_name}.mscx")
 
 
 if __name__ == "__main__":
