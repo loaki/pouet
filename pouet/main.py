@@ -20,12 +20,12 @@ def main():
     argparser.add_argument("-d", "--indir", default=None, type=str, help="directory's files")
     argparser.add_argument("-o", "--outdir", default=None, type=str, help="output directory")
     argparser.add_argument(
-        "-ms", "--ms_img_path", default=None, type=str, help="path to musescore image"
+        "-ms", "--ms_img_path", default=None, type=str, help="path to musescore app image"
     )
     args = argparser.parse_args()
 
     if args.indir:
-        files = os.listdir(args.indir)
+        files = list(map(lambda x: args.indir + "/" + x, os.listdir(args.indir)))
     elif args.infile:
         files = [args.infile]
     else:
@@ -42,10 +42,7 @@ def main():
             logging.error(f"{file_name} : extension .{ext} not supprted")
             continue
         if convert(
-            old=args.indir + "/" + file,
-            new=f"{cache_dir}/{file_name}.mscx",
-            ms_img=args.ms_img_path,
-            logger=logging,
+            old=file, new=f"{cache_dir}/{file_name}.mscx", ms_img=args.ms_img_path, logger=logging
         ):
             try:
                 parsing(f"{cache_dir}/{file_name}.mscx", file_name)
