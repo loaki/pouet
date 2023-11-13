@@ -28,20 +28,24 @@ def parsing(path, filename):
     tree = ET.parse(path)
     root = tree.getroot()
     for measure in root.findall(".//Measure"):
-        for chord in measure.findall(".//Chord"):
-            position = ""
-            for note in chord.findall(".//Note"):
-                aspn = pitch_to_note(note.find('.//pitch').text)
-                position += str(trombone_position(note.find('.//pitch').text))
-            staff_text = ET.Element("StaffText")
-            ET.SubElement(staff_text, "style").text = "Measure Number"
-            text = ET.SubElement(staff_text, "text")
-            font = ET.SubElement(text, "font")
-            font2 = ET.SubElement(text, "font")
-            font.set("size","7")
-            font2.set("face","FreeSans")
-            font2.text = f"{position}\n{aspn}"
-            if chord in list(measure):
-                index = list(measure).index(chord)
-                measure.insert(index, staff_text)
+        voices = measure.findall(".//voice") or [None]
+        for voice in voices:
+            if not voice:
+                voice = measure
+            for chord in voice.findall(".//Chord"):
+                position = ""
+                for note in chord.findall(".//Note"):
+                    aspn = pitch_to_note(note.find('.//pitch').text)
+                    position += str(trombone_position(note.find('.//pitch').text))
+                staff_text = ET.Element("StaffText")
+                ET.SubElement(staff_text, "style").text = "Measure Number"
+                text = ET.SubElement(staff_text, "text")
+                font = ET.SubElement(text, "font")
+                font2 = ET.SubElement(text, "font")
+                font.set("size","7")
+                font2.set("face","FreeSans")
+                font2.text = f"{position}\n{aspn}"
+                if chord in list(voice):
+                    index = list(voice).index(chord)
+                    voice.insert(index, staff_text)
     tree.write(f"cache/{filename}_note.mscx")

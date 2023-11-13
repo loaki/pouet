@@ -5,6 +5,7 @@ import argparse
 from converter import convert
 from parsing import parsing
 
+# https://musescore.org/en
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s : %(message)s",
@@ -42,8 +43,9 @@ def main():
             continue
         if convert(old=file, new=f"{cache_dir}/{file_name}.mscx", ms_img=args.ms_img_path, logger=logging):
             parsing(f"{cache_dir}/{file_name}.mscx", file_name)
-            convert(old=f"{cache_dir}/{file_name}.mscx", new=f"{out_dir}/{file_name}.pdf", ms_img=args.ms_img_path, logger=logging)
-            # os.remove(f"{cache_dir}/{file_name}.mscx")
+            convert(old=f"{cache_dir}/{file_name}_note.mscx", new=f"{out_dir}/{file_name}.pdf", ms_img=args.ms_img_path, logger=logging)
+            os.remove(f"{cache_dir}/{file_name}_note.mscx")
+            os.remove(f"{cache_dir}/{file_name}.mscx")
 
 
 if __name__ == "__main__":
